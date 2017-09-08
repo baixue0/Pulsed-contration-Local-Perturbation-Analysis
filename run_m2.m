@@ -13,7 +13,7 @@ RHShandle=SubFunHandles{2};      %Get function handle for ODE
 %Set ODE parameter
 k7=3;
 k0=.001;k1=1;k2=0.4;
-k3=0.7;k4=0.8;
+k3=0.7;k4=0.7;
 k5=0.2;k6=0.025;
 k8=0.01;k9=0.01;
 
@@ -42,7 +42,7 @@ options=odeset(options,'maxstep',1e-1);
 
 %Integrate until a steady state is found.
 [tout xout]=ode45(RHS_no_param,[0,1000],xinit,options);
-figure();plot(xout(:,1))
+%figure();plot(xout(:,1))
 %
 %%%%% Continuation from equilibrium %%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -84,7 +84,7 @@ plot(x1(paramid,cat(1,s1(2:end-1).index)),x1(ssvalueid,cat(1,s1(2:end-1).index))
 %%
 %%%%% Branch swiching and continuation %%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-chosen=s1(5);
+chosen=s1(6);
 BP=x1(:,chosen.index);
 pvec(ap)=BP(paramid);
 [x0,vO]=init_BP_EP(syshandle, BP(1:paramid-1), pvec, chosen, 0.01);  
@@ -96,7 +96,7 @@ pvec(ap)=x3(paramid,10);
 
 [x0,v0]=init_EP_EP(syshandle, xNearBP, pvec, ap); %Initialize equilibrium
 
-opt=contset(opt,'MaxNumPoints',700);
+opt=contset(opt,'MaxNumPoints',500);
 opt=contset(opt,'Backward',1);
 [x4,v4,s4,h4,f4]=cont(@equilibrium,x0,v0,opt); %Switch branches and continue.
 
@@ -141,7 +141,7 @@ text(x4(paramid,cat(1,s4(2:end-1).index))+0.005,x4(ssvalueid,cat(1,s4(2:end-1).i
 plot(k0,xout(1,1),'c^-');plot(k0,xout(end,1),'cv-');
 %%
 %Set ODE parameter
-k0=.16;
+k0=.26;
 fun=@(x,k0,k1,k2,k3,k4,k5,k6,k7,k8,k9) (k0+k1*x^3/(x^3+k2^3))*(k8/k9-x)-(k3+k4*k5/k6*x/(1+k5/k6*x))*x;
 fun2=@(x) fun(x,k0,k1,k2,k3,k4,k5,k6,k7,k8,k9);
 
