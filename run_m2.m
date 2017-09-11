@@ -11,11 +11,11 @@ SubFunHandles=feval(syshandle);  %Get function handles from system file
 RHShandle=SubFunHandles{2};      %Get function handle for ODE
 
 %Set ODE parameter
-k7=3;
-k0=.001;k1=1;k2=0.4;
-k3=0.7;k4=0.7;
+k7=1;
+k0=.001;k1=10;k2=0.6;
+k3=0.2;k4=1;
 k5=0.2;k6=0.025;
-k8=0.01;k9=0.01;
+k8=0.0001;k9=0.0001;
 
 %{
 
@@ -84,7 +84,7 @@ plot(x1(paramid,cat(1,s1(2:end-1).index)),x1(ssvalueid,cat(1,s1(2:end-1).index))
 %%
 %%%%% Branch swiching and continuation %%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-chosen=s1(6);
+chosen=s1(5);
 BP=x1(:,chosen.index);
 pvec(ap)=BP(paramid);
 [x0,vO]=init_BP_EP(syshandle, BP(1:paramid-1), pvec, chosen, 0.01);  
@@ -141,12 +141,12 @@ text(x4(paramid,cat(1,s4(2:end-1).index))+0.005,x4(ssvalueid,cat(1,s4(2:end-1).i
 plot(k0,xout(1,1),'c^-');plot(k0,xout(end,1),'cv-');
 %%
 %Set ODE parameter
-k0=.26;
-fun=@(x,k0,k1,k2,k3,k4,k5,k6,k7,k8,k9) (k0+k1*x^3/(x^3+k2^3))*(k8/k9-x)-(k3+k4*k5/k6*x/(1+k5/k6*x))*x;
+k0=.04;
+fun=@(x,k0,k1,k2,k3,k4,k5,k6,k7,k8,k9) (k0+k1*x^3/(x^3+k2^3))*(k8/k9-x)-(k3+k4*k5/k6*x)*x;
 fun2=@(x) fun(x,k0,k1,k2,k3,k4,k5,k6,k7,k8,k9);
 
 hss(1)=fzero(fun2,1);hss(2)=hss(1);hss(3)=k8/k9; hss(4)=k5/k6*hss(1);hss(5)=hss(4);
-delta=0.1; hss(1)=hss(1)+delta;%hss(2)=hss(2)-delta;
+delta=0.00001; hss(1)=hss(1)+delta;%hss(2)=hss(2)-delta;
 %Specify ODE function with ODE parameters set
 RHS_no_param=@(t,x)RHShandle(t,x,k0,k1,k2,k3,k4,k5,k6,k7,k8,k9); 
 
@@ -156,8 +156,8 @@ options=odeset(options,'RelTol',1e-5);
 options=odeset(options,'maxstep',1e-1);
 
 %Integrate until a steady state is found.
-[tout xout]=ode45(RHS_no_param,[0,200],hss,options);
-figure(); hold on; plot(xout(:,1),'r-');plot(xout(:,2),'r:');plot(xout(:,3),'y-');plot(xout(:,4),'b-');plot(xout(:,5),'b:');
+[tout xout]=ode45(RHS_no_param,[0,500],hss,options);
+figure(); hold on; plot(tout,xout(:,1),'r-');plot(tout,xout(:,2),'r:');plot(tout,xout(:,3),'y-');plot(tout,xout(:,4),'b-');plot(tout,xout(:,5),'b:');
 %%
 
 
