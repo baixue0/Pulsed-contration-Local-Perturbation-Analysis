@@ -13,8 +13,8 @@ RHShandle=SubFunHandles{2};      %Get function handle for ODE
 %Set ODE parameter
 k7=1;
 k0=.001;k1=10;k2=0.6;
-k3=0.2;k4=1;
-k5=0.2;k6=0.025;
+k3=0.9;k4=0.9;
+k5=0.2;k6=0.2;
 k8=0.0001;k9=0.0001;
 
 %{
@@ -88,7 +88,7 @@ chosen=s1(5);
 BP=x1(:,chosen.index);
 pvec(ap)=BP(paramid);
 [x0,vO]=init_BP_EP(syshandle, BP(1:paramid-1), pvec, chosen, 0.01);  
-opt=contset(opt,'MaxNumPoints',300);
+opt=contset(opt,'MaxNumPoints',500);
 [x3,v3,s3,h3,f3]=cont(@equilibrium,x0,v0,opt); %Switch branches and continue.
 
 xNearBP=x3(1:paramid-1,10);
@@ -96,7 +96,7 @@ pvec(ap)=x3(paramid,10);
 
 [x0,v0]=init_EP_EP(syshandle, xNearBP, pvec, ap); %Initialize equilibrium
 
-opt=contset(opt,'MaxNumPoints',500);
+opt=contset(opt,'MaxNumPoints',1400);
 opt=contset(opt,'Backward',1);
 [x4,v4,s4,h4,f4]=cont(@equilibrium,x0,v0,opt); %Switch branches and continue.
 
@@ -141,12 +141,12 @@ text(x4(paramid,cat(1,s4(2:end-1).index))+0.005,x4(ssvalueid,cat(1,s4(2:end-1).i
 plot(k0,xout(1,1),'c^-');plot(k0,xout(end,1),'cv-');
 %%
 %Set ODE parameter
-k0=.04;
+k0=.21;
 fun=@(x,k0,k1,k2,k3,k4,k5,k6,k7,k8,k9) (k0+k1*x^3/(x^3+k2^3))*(k8/k9-x)-(k3+k4*k5/k6*x)*x;
 fun2=@(x) fun(x,k0,k1,k2,k3,k4,k5,k6,k7,k8,k9);
 
 hss(1)=fzero(fun2,1);hss(2)=hss(1);hss(3)=k8/k9; hss(4)=k5/k6*hss(1);hss(5)=hss(4);
-delta=0.00001; hss(1)=hss(1)+delta;%hss(2)=hss(2)-delta;
+delta=0.1; hss(1)=hss(1)+delta;%hss(2)=hss(2)-delta;
 %Specify ODE function with ODE parameters set
 RHS_no_param=@(t,x)RHShandle(t,x,k0,k1,k2,k3,k4,k5,k6,k7,k8,k9); 
 
