@@ -11,6 +11,7 @@ SubFunHandles=feval(syshandle);  %Get function handles from system file
 RHShandle=SubFunHandles{2};      %Get function handle for ODE
 
 %Set ODE parameter
+<<<<<<< HEAD
 k7=1;
 k0=.001;k1=10;k2=0.6;
 k3=0.9;k4=0.9;
@@ -29,6 +30,11 @@ A'=f
 I'=-f+k8*(k7-A-I)-k9*I                                    
 F'=k5*A-k6*F                                              
 %}
+=======
+k0=.001;k1=10;
+k2=0.6;k3=0.2;
+k4=1;k5=1;
+>>>>>>> e07b97dbca9da6a827cf5ca9c0512594a5fe030f
 
 xinit=[0,0,0,0,0]; %Set ODE initial condition
 
@@ -159,5 +165,27 @@ options=odeset(options,'maxstep',1e-1);
 [tout xout]=ode45(RHS_no_param,[0,500],hss,options);
 figure(); hold on; plot(tout,xout(:,1),'r-');plot(tout,xout(:,2),'r:');plot(tout,xout(:,3),'y-');plot(tout,xout(:,4),'b-');plot(tout,xout(:,5),'b:');
 %%
+i=3;
+k0=params(i,1);k1=params(i,2);k2=params(i,3);k3=params(i,4);k4=params(i,5);k5=params(i,6);
 
+A=linspace(0,10,1000);
+F=((k0+k1*A.^3/(A.^3+1))*k4/k5./A-k2)/k3;
 
+zx = zci(F-A);% Approximate Zero-Crossing Indices
+figure();hold on;plot(A,F);plot(A,A);plot(A(zx),F(zx),'kx');axis([0 inf -10 10]);
+%%
+zci = @(v) find(v(:).*circshift(v(:), [-1 0]) <= 0);% Returns Zero-Crossing Indices Of Argument Vector
+K0=10;K1=10;
+K2=10;K3=10;
+K4=1;K5=1;
+A=linspace(0,10,1000);
+params=[];N=0;
+while N<10
+    k0=K0*rand();k1=K1*rand();k2=K2*rand();k3=K2*rand();k4=K4;k5=K5;
+    F=((k0+k1*A.^3/(A.^3+1))*k4/k5./A-k2)/k3;%size(zci(F-A),1)
+    if size(zci(F-A),1)>2
+        N=N+1; 
+        params(N,:)=[k0,k1,k2,k3,k4,k5];
+        [k0,k1,k2,k3,k4,k5]
+    end
+end
