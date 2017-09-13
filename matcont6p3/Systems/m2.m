@@ -10,11 +10,11 @@ out{8} = [];
 out{9} = [];
 
 % --------------------------------------------------------------------------
-function dydt = fun_eval(t,kmrgd,k0,k1,k2,k3,k4,k5)
-dydt=[(k0+k1*kmrgd(1)^3/(kmrgd(1)^3+1))*(k4/k5-kmrgd(2))-(k2+k3*kmrgd(3))*kmrgd(1);
-(k0+k1*kmrgd(2)^3/(kmrgd(2)^3+1))*(k4/k5-kmrgd(2))-(k2+k3*kmrgd(4))*kmrgd(2);
-kmrgd(1)-kmrgd(3);
-kmrgd(2)-kmrgd(4);];
+function dydt = fun_eval(t,u,k0,k1,k2,k3,k4,k5)
+dydt=[(k0+k1*u(1)^3/(u(1)^3+1))*(k4/k5-u(2))-(1+k2*u(3))*u(1);
+(k0+k1*u(2)^3/(u(2)^3+1))*(k4/k5-u(2))-(1+k2*u(4))*u(2);
+k3*(u(1)-u(3));
+k3*(u(2)-u(4));];
 
 % --------------------------------------------------------------------------
 function [tspan,y0,options] = init
